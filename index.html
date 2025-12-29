@@ -2,67 +2,376 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>DITRXH的文件站-入口</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人主页</title>
     <style>
-        * {margin: 0; padding: 0; box-sizing: border-box;}
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
+        }
+
+        /* 主题色变量（方便统一修改） */
+        :root {
+            --primary-1: #0050ff;
+            --primary-2: #0072ff;
+            --primary-3: #0094ff;
+            --primary-4: #00a6ff;
+            --text-gray: #999; /* 脚注淡灰色 */
+            --bg-main: #f5f8ff;
+            --white: #ffffff;
+            --shadow: 0 2px 15px rgba(0, 80, 255, 0.1);
+        }
+
         body {
+            background-color: var(--bg-main);
+            padding-top: 80px; /* 给顶部固定栏留空间 */
             min-height: 100vh;
+        }
+
+        /* 1. 顶部固定文件站入口栏 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: linear-gradient(90deg, var(--primary-1), var(--primary-4));
             display: flex;
-            flex-direction: column;
+            justify-content: flex-end;
             align-items: center;
-            justify-content: center;
-            background-color: #f5f5f5;
-            font-family: sans-serif;
+            padding: 0 40px;
+            box-shadow: var(--shadow);
+            z-index: 999;
         }
-        .container {
-            background: white;
-            padding: 40px;
+
+        /* 文件站按钮样式优化 */
+        .file-btn {
+            padding: 10px 24px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--primary-1);
+            border: none;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        h1 {
-            color: #333;
+
+        .file-btn:hover {
+            background-color: var(--white);
+            box-shadow: 0 2px 8px rgba(0, 80, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 2. 线路选择弹窗（毛玻璃+渐显渐隐动画） */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px); /* 毛玻璃模糊 */
+            -webkit-backdrop-filter: blur(12px); /* 兼容webkit内核 */
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 80, 255, 0.15);
+            transform: translateY(-20px);
+            transition: transform 0.4s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 80, 255, 0.1);
+            padding-bottom: 15px;
         }
-        .link-item {
+
+        .modal-title {
+            font-size: 18px;
+            color: var(--primary-1);
+            font-weight: 600;
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(0, 80, 255, 0.05);
+            color: var(--primary-2);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background-color: rgba(0, 80, 255, 0.1);
+        }
+
+        .line-item {
             margin: 15px 0;
         }
-        .file-link {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #00aaff;
-            color: white;
+
+        .line-link {
+            display: block;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary-2), var(--primary-3));
+            color: var(--white);
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            text-align: center;
             font-size: 16px;
-            transition: background 0.2s;
+            transition: all 0.3s ease;
         }
-        .file-link:hover {
-            background-color: #0088dd;
+
+        .line-link:hover {
+            background: linear-gradient(135deg, var(--primary-1), var(--primary-2));
+            box-shadow: 0 2px 8px rgba(0, 80, 255, 0.2);
+            transform: translateY(-2px);
         }
-        .desc {
+
+        /* 3. 主体内容布局（左侧个人信息 + 右侧可编辑内容） */
+        .main-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 40px auto;
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        /* 左侧个人信息区 */
+        .profile-sidebar {
+            width: 300px;
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            flex-shrink: 0; /* 防止压缩 */
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border: 4px solid rgba(0, 80, 255, 0.1);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            color: var(--primary-1);
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .profile-desc {
             color: #666;
-            margin-top: 5px;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .profile-info {
+            margin-bottom: 15px;
+        }
+
+        .profile-info label {
+            color: var(--primary-2);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .profile-info a, .profile-info span {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .profile-info a:hover {
+            color: var(--primary-3);
+            text-decoration: underline;
+        }
+
+        /* 右侧可编辑内容区 */
+        .content-area {
+            flex: 1;
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            min-height: 600px; /* 基础高度，可根据内容调整 */
+        }
+
+        /* 4. 底部脚注 */
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--text-gray);
             font-size: 14px;
+            border-top: 1px solid rgba(0, 80, 255, 0.05);
+            margin-top: 40px;
+        }
+
+        /* 响应式适配（手机端） */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .profile-sidebar {
+                width: 100%;
+            }
+            .top-nav {
+                padding: 0 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>文件站入口</h1>
-        
-        <div class="link-item">
-            <a href="https://file.h63126b53.nyat.app:12346" class="file-link" target="_blank">
-                广东节点
-            </a>
-        </div>
-        
-        <div class="link-item">
-            <a href="https://backup-file.h63126b53.nyat.app:12346" class="file-link" target="_blank">
-                (备用不推荐)香港节点
-            </a>
+    <!-- 顶部固定文件站入口栏 -->
+    <div class="top-nav">
+        <button class="file-btn" id="fileBtn">文件站入口</button>
+    </div>
+
+    <!-- 线路选择弹窗 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">选择文件站访问线路</h3>
+                <button class="close-btn" id="closeBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="line-item">
+                    <a href="https://file-alpha.h63126b53.nyat.app:30213" class="line-link" target="_blank">
+                        广东节点 - 主线路
+                    </a>
+                </div>
+                <div class="line-item">
+                    <a href="https://file.h63126b53.nyat.app:1451" class="line-link" target="_blank">
+                        香港节点 - 备用线路
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- 主体内容容器 -->
+    <div class="main-container">
+        <!-- 左侧个人信息区 -->
+        <div class="profile-sidebar">
+            <div class="avatar">
+                <img src="https://file.h63126b53.nyat.app:12346/demo.png" alt="头像">
+            </div>
+            <h2 class="profile-name">ditr_xiaohei</h2>
+            <p class="profile-desc">这里还没有内容>zh>
+            
+            <div class="profile-info">
+                <label>电子邮件</label>
+                <a href="mailto:ditrxiaohei@yeah.net">ditrxiaohei@yeah.net>di>
+            </div>
+            <div class="profile-info">
+                <label>B站主页</label>
+                <a href="https://space.bilibili.com/1442776602" target="_blank">space.bilibili.com/1442776602</a>
+            </div>
+        </div>
+
+        <!-- 右侧可编辑内容区（用div包裹，供你编辑） -->
+        <div class="content-area">
+            <!-- 以下内容全部替换为你自己的内容即可 -->
+            <h2 style="color: var(--primary-1); margin-bottom: 20px;">欢迎来到我的个人主页</h2>
+            <p style="line-height: 1.8; color: #666; margin-bottom: 15px;">
+                这里是可编辑的主要内容区域，你可以自由添加文字、图片、链接、列表等任意HTML内容。
+            </p>
+            <p style="line-height: 1.8; color: #666;">
+                示例：<br>
+                - 可以添加个人作品展示<br>
+                - 可以添加技术博客文章<br>
+                - 可以添加兴趣爱好、项目经历等<br>
+                - 所有样式可通过CSS调整，主题色已统一配置
+            </p>
+        </div>
+    </div>
+
+    <!-- 底部脚注 -->
+    <div class="footer">
+        Copyright (c) 2025-2026 DITRXH
+    </div>
+
+    <!-- 弹窗交互JS -->
+    <script>
+        // 获取元素
+        const fileBtn = document.getElementById('fileBtn');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeBtn = document.getElementById('closeBtn');
+
+        // 打开弹窗
+        fileBtn.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
+        });
+
+        // 关闭弹窗
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            // 恢复背景滚动
+            document.body.style.overflow = 'auto';
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+
+        // 点击弹窗外部关闭
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // 按ESC键关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
