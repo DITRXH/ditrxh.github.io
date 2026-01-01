@@ -252,6 +252,32 @@
             margin-top: 40px;
         }
 
+                .info-block, .notice-block, .warning-block {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid;
+            line-height: 1.8;
+        }
+        
+        .info-block {
+            background-color: var(--info-color);
+            border-color: var(--info-border);
+            color: var(--info-text);
+        }
+        
+        .notice-block {
+            background-color: var(--notice-color);
+            border-color: var(--notice-border);
+            color: var(--notice-text);
+        }
+        
+        .warning-block {
+            background-color: var(--warning-color);
+            border-color: var(--warning-border);
+            color: var(--warning-text);
+        }
+
         /* 响应式适配（手机端） */
         @media (max-width: 768px) {
             .main-container {
@@ -275,6 +301,9 @@
     <!-- 线路选择弹窗 -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
+            <div class="notice-block">
+                由于内网穿透服务的限制，节点已更换至湖北多线以及枣庄多线。如遇访问问题，请尝试切换线路。<br>
+                另请参阅https://www.natfrp.com/
             <div class="modal-header">
                 <h3 class="modal-title">选择文件站访问线路</h3>
                 <button class="close-btn" id="closeBtn">&times;</button>
@@ -282,12 +311,12 @@
             <div class="modal-body">
                 <div class="line-item">
                     <a href="https://file.h63126b53.nyat.app:12346" class="line-link" target="_blank">
-                        广东节点 - 主线路
+                        主线路
                     </a>
                 </div>
                 <div class="line-item">
                     <a href="https://backup-file.h63126b53.nyat.app:12346" class="line-link" target="_blank">
-                        香港节点 - 备用线路
+                        备用线路
                     </a>
                 </div>
             </div>
@@ -302,7 +331,7 @@
                 <img src="https://file.h63126b53.nyat.app:12346/demo.png" alt="头像">
             </div>
             <h2 class="profile-name">ditr_xiaohei</h2>
-            <p class="profile-desc">这里还没有内容</p>
+            <p class="profile-desc">C艹大蛇来到</p>
             
             <div class="profile-info">
                 <label>电子邮件</label>
