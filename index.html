@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>页面重定向</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "HarmonyOS Sans SC", sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .redirect-box {
+            background-color: #fff;
+            padding: 40px 50px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .redirect-title {
+            font-size: 32px;
+            color: #999;
+            margin-bottom: 25px;
+        }
+        .redirect-content {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        .redirect-content a {
+            color: #00aaff;
+            text-decoration: underline;
+        }
+        .btn-area {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .continue-btn {
+            padding: 12px 30px;
+            background-color: #00aaff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .continue-btn:hover {
+            background-color: #0088dd;
+        }
+        .countdown-tip {
+            color: #999;
+            font-size: 14px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .tip-text {
+            color: #666;
+            font-size: 14px;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-box">
+        <div class="redirect-title">页面重定向</div>
+        <div class="redirect-content">
+            正在寻找文件站？将在<span id="countdown">5</span>秒后自动重定向到文件站<br>
+            <a href="https://file.h63126b53.nyat.app:12346/index.asp" target="_self">https://file.h63126b53.nyat.app:12346</a><br>
+            如果您想访问个人主页，请点击下面的按钮
+        </div>
+        <div class="btn-area">
+            <button class="continue-btn" onclick="stopRedirect()">访问个人主页</button>
+        </div>
+        <div id="tip" class="tip-text"></div>
+    </div>
+
+    <script>
+        // 重定向目标地址（文件站地址）
+        const targetUrl = "https://file.h63126b53.nyat.app:12346/index.asp";
+        // 个人主页地址
+        const homepageUrl = "homepage.html";
+        // 倒计时秒数
+        let countdown = 5;
+        // 定时器ID
+        let redirectTimer;
+
+        // 启动倒计时
+        function startCountdown() {
+            redirectTimer = setInterval(() => {
+                countdown--;
+                document.getElementById("countdown").innerText = countdown;
+                if (countdown <= 0) {
+                    clearInterval(redirectTimer);
+                    window.location.href = targetUrl;
+                }
+            }, 1000);
+        }
+
+        // 停止重定向，跳转到个人主页
+        function stopRedirect() {
+            clearInterval(redirectTimer);
+            document.getElementById("tip").innerText = "即将跳转到个人主页...";
+            window.location.href = homepageUrl;
+        }
+
+        // 初始化倒计时
+        startCountdown();
+    </script>
+</body>
+</html>
