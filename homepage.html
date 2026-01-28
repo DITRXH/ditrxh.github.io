@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>帮助</title>
+    <title>DITRXH个人主页</title>
     <style>
-        /* 全局样式重置（和个人主页完全一致） */
+        /* 全局样式重置 */
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +13,7 @@
             font-family: "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
         }
 
-        /* 主题色变量（复用个人主页的4种蓝色） */
+        /* 主题色变量（方便统一修改） */
         :root {
             --primary-1: #0050ff;
             --primary-2: #0072ff;
@@ -31,7 +31,7 @@
             min-height: 100vh;
         }
 
-        /* 顶部固定文件站入口栏（完全复用） */
+        /* 1. 顶部固定文件站入口栏 */
         .top-nav {
             position: fixed;
             top: 0;
@@ -47,6 +47,7 @@
             z-index: 999;
         }
 
+        /* 文件站按钮样式优化 */
         .file-btn {
             padding: 10px 24px;
             background-color: rgba(255, 255, 255, 0.9);
@@ -65,7 +66,7 @@
             transform: translateY(-2px);
         }
 
-        /* 线路选择弹窗（完全复用，毛玻璃+渐显渐隐） */
+        /* 2. 线路选择弹窗（毛玻璃+渐显渐隐动画） */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -91,8 +92,8 @@
             width: 100%;
             max-width: 400px;
             background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px); /* 毛玻璃模糊 */
+            -webkit-backdrop-filter: blur(12px); /* 兼容webkit内核 */
             border-radius: 12px;
             padding: 30px;
             box-shadow: 0 4px 20px rgba(0, 80, 255, 0.15);
@@ -160,24 +161,88 @@
             transform: translateY(-2px);
         }
 
-        /* 主体内容区（去掉左侧栏，内容区占满宽度） */
+        /* 3. 主体内容布局（左侧个人信息 + 右侧可编辑内容） */
         .main-container {
+            display: flex;
             max-width: 1200px;
             margin: 40px auto;
+            gap: 30px;
             padding: 0 20px;
         }
 
-        /* 可编辑内容区（占满容器宽度，保留原有样式） */
-        .content-area {
-            width: 100%;
+        /* 左侧个人信息区 */
+        .profile-sidebar {
+            width: 300px;
             background-color: var(--white);
             border-radius: 12px;
-            padding: 40px;
+            padding: 30px;
             box-shadow: var(--shadow);
-            min-height: 600px;
+            flex-shrink: 0; /* 防止压缩 */
         }
 
-        /* 底部脚注（完全复用） */
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border: 4px solid rgba(0, 80, 255, 0.1);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            color: var(--primary-1);
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .profile-desc {
+            color: #666;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .profile-info {
+            margin-bottom: 15px;
+        }
+
+        .profile-info label {
+            color: var(--primary-2);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .profile-info a, .profile-info span {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .profile-info a:hover {
+            color: var(--primary-3);
+            text-decoration: underline;
+        }
+
+        /* 右侧可编辑内容区 */
+        .content-area {
+            flex: 1;
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            min-height: 600px; /* 基础高度，可根据内容调整 */
+        }
+
+        /* 4. 底部脚注 */
         .footer {
             text-align: center;
             padding: 20px 0;
@@ -189,22 +254,25 @@
 
         /* 响应式适配（手机端） */
         @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .profile-sidebar {
+                width: 100%;
+            }
             .top-nav {
                 padding: 0 20px;
-            }
-            .content-area {
-                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 顶部固定文件站入口栏（完全复用） -->
+    <!-- 顶部固定文件站入口栏 -->
     <div class="top-nav">
         <button class="file-btn" id="fileBtn">文件站入口</button>
     </div>
 
-    <!-- 线路选择弹窗（完全复用） -->
+    <!-- 线路选择弹窗 -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -213,7 +281,7 @@
             </div>
             <div class="modal-body">
                 <div class="line-item">
-                    <a href="https://file.h63126b53.nyat.app:12346/" class="line-link" target="_blank">
+                    <a href="https://file.h63126b53.nyat.app:12346" class="line-link" target="_blank">
                         主站
                     </a>
                 </div>
@@ -226,27 +294,50 @@
         </div>
     </div>
 
-    <!-- 主体内容容器（去掉左侧栏，仅保留内容区） -->
+    <!-- 主体内容容器 -->
     <div class="main-container">
-        <!-- 可编辑内容区 -->
+        <!-- 左侧个人信息区 -->
+        <div class="profile-sidebar">
+            <div class="avatar">
+                <img src="https://file.h63126b53.nyat.app:12346/demo.png" alt="头像">
+            </div>
+            <h2 class="profile-name">ditr_xiaohei</h2>
+            <p class="profile-desc">C艹大蛇来到</p>
+            
+            <div class="profile-info">
+                <label>电子邮件</label>
+                <a href="mailto:ditrxiaohei@yeah.net">ditrxiaohei@yeah.net</a>
+            </div>
+            <div class="profile-info">
+                <label>B站主页</label>
+                <a href="https://space.bilibili.com/1442776602" target="_blank">space.bilibili.com/1442776602</a>
+            </div>
+        </div>
+
+        <!-- 右侧可编辑内容区 -->
         <div class="content-area">
-            <h2 style="color: var(--primary-1); margin-bottom: 20px;">为什么已经有了供游客访问的选项我还需要登录？</h2>
+            <h2 style="color: var(--primary-1); margin-bottom: 20px;">ABOUT 关于我 ME</h2>
             <p style="line-height: 1.8; color: #666; margin-bottom: 15px;">
-                答：为了防爬虫以及权限控制。
+                CPP、C#、Python、Lua大蛇<br>
+                3D建模正在学，渲染倒是会了<br>
+                14岁目前在校学习<br>
+                现在正在开发一款独立RPG游戏，如果你愿意 <del>投喂</del> 赞助的话，<a href="https://file.h63126b53.nyat.app:12346/赞助.png">点这里就可以了哦</a>，不胜感激！
             </p>
             <p style="line-height: 1.8; color: #666;">
-                为了防止爬虫爬到该网站的敏感信息造成不必要的麻烦，以及分类用户以便控制其是否可使用<del>文件上传（没做完）</del>功能
+                <a href="HELP.html" style="color: var(--primary-2); text-decoration: none;"><b>关于帮助</b></a><br>
+                <a href="子页面模板.html" style="color: var(--primary-2); text-decoration: none;"><b>子页面模板</b></a>
             </p>
         </div>
     </div>
 
-    <!-- 底部脚注（完全复用） -->
+    <!-- 底部脚注 -->
     <div class="footer">
         Copyright (c) 2025-2026 ditr_xiaohei
     </div>
 
-    <!-- 弹窗交互JS（完全复用） -->
+    <!-- 弹窗交互JS -->
     <script>
+        // 获取元素
         const fileBtn = document.getElementById('fileBtn');
         const modalOverlay = document.getElementById('modalOverlay');
         const closeBtn = document.getElementById('closeBtn');
@@ -254,21 +345,31 @@
         // 打开弹窗
         fileBtn.addEventListener('click', () => {
             modalOverlay.classList.add('active');
+            // 禁止背景滚动
             document.body.style.overflow = 'hidden';
         });
 
         // 关闭弹窗
         function closeModal() {
             modalOverlay.classList.remove('active');
+            // 恢复背景滚动
             document.body.style.overflow = 'auto';
         }
 
         closeBtn.addEventListener('click', closeModal);
+
+        // 点击弹窗外部关闭
         modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) closeModal();
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
         });
+
+        // 按ESC键关闭弹窗
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
+            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                closeModal();
+            }
         });
     </script>
 </body>
